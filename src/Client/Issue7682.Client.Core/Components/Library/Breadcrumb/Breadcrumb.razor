@@ -1,0 +1,19 @@
+﻿@inherits AppComponentBase
+
+
+<div class="d-flex">
+    @foreach (var (item, index) in Items.Select((i, ii) => (i, ii)))
+    {
+        <a class="page" href="@item.href">@item.text</a>
+        @if (index != Items.Count() - 1)
+        {
+            <p class="divider">/</p>
+        }
+    }
+</div>
+
+
+
+@{
+
+}

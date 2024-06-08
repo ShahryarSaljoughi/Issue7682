@@ -1,0 +1,25 @@
+@import '../../../Styles/abstracts/_colors.scss';
+
+.page {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 32px;
+    color: $PrimaryColor;
+    text-decoration: none;
+    
+    &:last-child {
+        color: $Gray500;
+        font-weight: 500;
+    }
+}
+.divider {
+    margin: 0 6px;
+    color: $Gray400;
+    line-height: 32px;
+}
+
+i.bi {
+    width: 1em;
+    height: 1em;
+    font-size: 36px;
+} 

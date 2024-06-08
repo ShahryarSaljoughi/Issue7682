@@ -1,0 +1,19 @@
+﻿@import '../../../Styles/abstracts/_colors.scss';
+
+::deep .btn-style {
+    background-color: $White;
+    height: 40px;
+    width: 100%;
+    border-radius: 6px;
+    color: $PrimaryColor;
+    border-color:$White;
+
+    &:hover {
+        background-color: $PrimaryColorDark;
+        color: $White;
+    }
+}
+
+.btn_container {
+    width: 100%;
+}

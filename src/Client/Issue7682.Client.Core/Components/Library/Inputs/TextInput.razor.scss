@@ -1,0 +1,14 @@
+﻿@import '../../../Styles/abstracts/_colors.scss';
+
+/*these not working, copied them into app.scss in order to work*/
+::deep {
+
+    .custom-field {
+        border-radius: 6px;
+        background-color: $White;
+    }
+
+    .custom-focus {
+        color: $Gray500;
+    }
+}

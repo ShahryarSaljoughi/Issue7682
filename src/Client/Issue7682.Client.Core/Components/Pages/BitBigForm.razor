@@ -1,0 +1,303 @@
+﻿@page "/bit-form"
+@inherits AppComponentBase
+
+
+@using Issue7682.Client.Core.Components.Library
+@using Issue7682.Shared.Dtos
+@using Issue7682.Shared.Extensions
+@using Issue7682.Client.Core.Components.Library.Breadcrumb
+
+<div class="most-outer container-fluid p-4">
+
+    <BitSnackBar @ref="basicSnackBarRef"
+                 Position="@basicSnackBarPosition"
+                 AutoDismiss="@basicSnackBarAutoDismiss"
+                 AutoDismissTime="TimeSpan.FromSeconds(basicSnackBarDismissSeconds)" />
+
+    <div class="container">
+        <div class="d-flex justify-content-between container-fluid">
+            <Breadcrumb Items="@([("خانه","/"), ("مدیریت مشتریان","/"), ("مشتری جدید","/")])" />
+            <BackBtn Href="/" />
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="form-container">
+            @* https://stackoverflow.com/questions/77304849/nested-editform-in-blazor-is-this-possible  *@
+            <EditForm Model="@CustomerDto" Context="AddCustomerForm" OnValidSubmit="WrapHandled(SaveCustomerAsync)" novalidate>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <BitAccordion Dir="@BitDir.Rtl" Title="اطلاعات پایه" Style="border: none; " Styles="@(StylesProvider.accordionStyles)" IsExpanded="true">
+                    <div class="row g-3">
+                        <div class="col-md-6 ">
+                            <BitTextField @bind-Value="CustomerDto.FirstName" 
+                                          Label="نام" IsRequired="true" Placeholder="نام را وارد کنید"
+                                          Classes="@(StylesProvider.textFieldStyleClasses)" @onkeypress:stopPropagation />
+                            <ValidationMessage For="@(() => CustomerDto.FirstName)" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <BitTextField @bind-Value="CustomerDto.LastName" 
+                                          Label="نام خانوادگی"
+                                          IsRequired="true"
+                                          Placeholder="نام خانوادگی را وارد کنید"
+                                          Classes="@(StylesProvider.textFieldStyleClasses)" />
+
+                            <ValidationMessage For="@(() => CustomerDto.LastName)" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <DateInput @bind-Date="CustomerDto.BirthDateTime" Title="تاریخ تولد"></DateInput>
+                        </div>
+
+                        <div class="col-md-6">
+                            <BitDropdown Label="جنسیت" Dir="@BitDir.Rtl" Items="@genders" TItem="BitDropdownItem<Gender?>"
+                                         TValue="Gender?"
+                                         @bind-Value="CustomerDto.Gender"
+                                         Placeholder="انتخاب کنید"
+                                         Classes="@(StylesProvider.dropdownClassStyles)" />
+
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <BitTextField Type="BitTextFieldType.Tel"
+                                          Label="شماره موبایل"
+                                          IsRequired="true"
+                                          @bind-Value="CustomerDto.MobilePhone"
+                                          Classes="@(StylesProvider.textFieldStyleClasses)" />
+                            <ValidationMessage For="@(() => CustomerDto.MobilePhone)" />
+                        </div>
+                    </div>
+                </BitAccordion>
+
+                <BitAccordion Dir="@BitDir.Rtl" Title="اطلاعات تکمیلی" Style="border: none;" Styles="@(StylesProvider.accordionStyles)">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <BitTextField Value="@(CustomerDto.CustomerCode)" ValueExpression="@(() => CustomerDto.CustomerCode)" ValueChanged="@((newVal) => {CustomerDto.CustomerCode = newVal;})"
+                                          Label="کد مشتری"
+                                          Placeholder=""
+                                          Classes="@(StylesProvider.textFieldStyleClasses)" />
+                        </div>
+                        <div class="col-md-6">
+                            <BitTextField Value="@(CustomerDto.CustomerCard)" ValueExpression="@(() => CustomerDto.CustomerCard)" ValueChanged="@((newVal) => {CustomerDto.CustomerCard = newVal;})"
+                                          Label="کارت مشتری"
+                                          Placeholder=""
+                                          Classes="@(StylesProvider.textFieldStyleClasses)"></BitTextField>
+                        </div>
+                        <div class="col-md-6">
+                            <BitTextField Value="@(CustomerDto.NationalCode)" ValueExpression="@(() => CustomerDto.NationalCode)" ValueChanged="@((newVal) => {CustomerDto.NationalCode = newVal;})"
+                                          Label="کد ملی"
+                                          IsRequired="true"
+                                          Placeholder=""
+                                          Classes="@(StylesProvider.textFieldStyleClasses)"></BitTextField>
+                            <ValidationMessage For="@(() => CustomerDto.NationalCode)" />
+                        </div>
+                        <div class="col-md-6">
+                            <BitTextField Value="@(CustomerDto.PersonnelCode)" ValueExpression="@(() => CustomerDto.PersonnelCode)" ValueChanged="@((newVal) => {CustomerDto.PersonnelCode = newVal;})"
+                                          Label="کد پرسنلی"
+                                          Placeholder=""
+                                          Classes="@(StylesProvider.textFieldStyleClasses)" />
+                        </div>
+                        <div class="col-md-6">
+                            <BitDropdown Items="@(getDropdownItems<EducationLevel>(e => e.ToFarsi()))"
+                                         TItem="BitDropdownItem<EducationLevel>"
+                                         TValue="EducationLevel"
+                                         @bind-Value="CustomerDto.EducationLevel"
+                                         Placeholder="وارد کنید" Label="تحصیلات"
+                                         Classes="@(StylesProvider.dropdownClassStyles)" />
+                        </div>
+                        <div class="col-md-6">
+                            <BitTextField Value="@(CustomerDto.Email)" ValueExpression="@(() => CustomerDto.Email)" ValueChanged="@((newVal) => {CustomerDto.Email = newVal;})"
+                                          Type="BitTextFieldType.Email"
+                                          Label="ایمیل" Placeholder="ایمیل را وارد کنید" IsRequired="true" Classes="@(StylesProvider.textFieldStyleClasses)"></BitTextField>
+                            <ValidationMessage For="@(() => CustomerDto.Email)" />
+                        </div>
+                        <div class="col-md-6">
+                            <BitTextField Type="BitTextFieldType.Url"
+                                          Value="@(CustomerDto.WebSite)" ValueExpression="@(() => CustomerDto.WebSite)" ValueChanged="@((newVal) => {CustomerDto.WebSite = newVal;})"
+                                          Label="وبسایت"
+                                          Placeholder="وبسایت را وارد کنید"
+                                          Classes="@(StylesProvider.textFieldStyleClasses)" />
+                        </div>
+                    </div>
+                </BitAccordion>
+
+                <BitAccordion Dir="@BitDir.Rtl" Title="وضعیت تاهل" Style="border: none;" Styles="@(StylesProvider.accordionStyles)">
+                    <div class="row g-3">
+                        <BitDropdown @bind-Value="CustomerDto.MaritalStatus"
+                                     Class="col-md-6" Label="وضعیت تاهل"
+                                     Placeholder="انتخاب کنید"
+                                     Items="@(getNullableDropdownItems<MaritalStatus>(ms => ms.ToFarsi()))"
+                                     TItem="BitDropdownItem<MaritalStatus?>" TValue="MaritalStatus?"
+                                     Classes="@(StylesProvider.dropdownClassStyles)" />
+
+                        <div class="col-md-6">
+                            <DateInput @bind-Date="CustomerDto.MarriageAnniversary" Title="سالگرد ازدواج" />
+                        </div>
+                        <div class="col-md-6">
+                            <DateInput @bind-Date="CustomerDto.SpouseBirthDateTime" Title="تاریخ تولد همسر" />
+                        </div>
+                    </div>
+                </BitAccordion>
+
+                <BitAccordion Dir="@BitDir.Rtl" Title="نحوه آشنایی" Style="border: none;" Styles="@(StylesProvider.accordionStyles)">
+                    <div class="row g-3">
+                        <BitDropdown Label="نحوه آشنایی"
+                                     @bind-Value="CustomerDto.IntroductionMethod"
+                                     Items="@(getNullableDropdownItems<CustomerIntroductionMethod>(im => im.ToFarsi()))"
+                                     TItem="BitDropdownItem<CustomerIntroductionMethod?>" TValue="CustomerIntroductionMethod?"
+                                     Class="col-md-6"
+                                     Classes="@(StylesProvider.dropdownClassStyles)" />
+                        <div class="col-md-6">
+                            <DateInput @bind-Date="CustomerDto.AcquisitionDateTime" Title="تاریخ جذب"></DateInput>
+                        </div>
+                    </div>
+
+                </BitAccordion>
+
+                <BitAccordion Dir="@BitDir.Rtl" Title="اطلاعات تماس" Style="border: none;" Styles="@(StylesProvider.accordionStyles)">
+                    <EditForm class="row g-3" Model="newContactInfo" OnValidSubmit="WrapHandled(AddContactInfo)">
+                        <BitDropdown Class="col-md-6" Label="نوع شماره" Placeholder="انتخاب کنید"
+                                     @bind-Value="newContactInfo.Phone.Type"
+                                     TValue="CustomerPhoneType?" TItem="BitDropdownItem<CustomerPhoneType?>"
+                                     Items="@(getNullableDropdownItems<CustomerPhoneType>(t => t.ToFarsi()))"
+                                     Classes="@(StylesProvider.dropdownClassStyles)" />
+
+                        <BitTextField Value="@(newContactInfo.Phone.Number)" ValueExpression="@(() => newContactInfo.Phone.Number)" ValueChanged="@((newVal) => {newContactInfo.Phone.Number = newVal;})"
+                                      Class="col-md-6"
+                                      Label="شماره"
+                                      Placeholder="شماره را وارد کنید"
+                                      Classes="@(StylesProvider.textFieldStyleClasses)" />
+
+                        <BitTextField Value="@(newContactInfo.Phone.Description)" ValueExpression="@(() => newContactInfo.Phone.Description)" ValueChanged="@((newVal) => {newContactInfo.Phone.Description = newVal;})"
+                                      Placeholder="توضیحات"
+                                      Class="col-md-12"
+                                      Classes="@(StylesProvider.textFieldStyleClasses)" />
+
+                        <BitDropdown @bind-Value="newContactInfo.Address.Province" @bind-Value:after="UpdateCitiesAsync"
+                                     Label="استان" Placeholder="انتخاب کنید"
+                                     Class="col-md-4"
+                                     TValue="ProvinceDto" TItem="BitDropdownItem<ProvinceDto>"
+                                     Items="@(Provinces.Select(p => new BitDropdownItem<ProvinceDto>(){Text = p.Name, Value = p}).ToList())"
+                                     Classes="@(StylesProvider.dropdownClassStyles)" />
+
+                        <BitDropdown @bind-Value="newContactInfo.Address.City" Label="شهر" Placeholder="انتخاب کنید"
+                                     Class="col-md-4"
+                                     TValue="CityDto" TItem="BitDropdownItem<CityDto>"
+                                     Items="@(cities)"
+                                     Classes="@(StylesProvider.dropdownClassStyles)" />
+
+                        <BitTextField Value="@(newContactInfo.Address.Title)" ValueExpression="@(() => newContactInfo.Address.Title)" ValueChanged="@((newVal) => {newContactInfo.Address.Title= newVal;})"
+                                      Class="col-md-4"
+                                      Label="عنوان"
+                                      Classes="@(StylesProvider.textFieldStyleClasses)" />
+
+                        <BitTextField Value="@(newContactInfo.Address.AddressRest)" ValueExpression="@(() => newContactInfo.Address.AddressRest)" ValueChanged="@((newVal) => {newContactInfo.Address.AddressRest = newVal;})"
+                                      Class="col-md-12"
+                                      Placeholder="آدرس"
+                                      Classes="@(StylesProvider.textFieldStyleClasses)" />
+
+                        <BitNumberField @bind-Value="newContactInfo.Address.PostalCode" Class="col-md-6" Placeholder="کد پستی" Classes="@(StylesProvider.numberFieldClassStyles)" />
+
+                        <div class="d-flex justify-content-start mt-3">
+                            <BitIconButton OnClick="WrapHandled(ResetContactInfo)"
+                                           IconName="@BitIconName.Add"
+                                           Class="btn-style btn-blue"
+                                           Style="max-width: 24px; max-height:24px; padding: 12px; font-size: 14px;">افزودن</BitIconButton>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-3">
+                            <BitButton ButtonType="@BitButtonType.Submit" Class="btn-style btn-white w-auto ">افزودن</BitButton>
+                        </div>
+
+                    </EditForm>
+
+                </BitAccordion>
+
+                <div dir="rtl" class="row gy-3 mt-2">
+                    <BitTextField Value="@(CustomerDto.Description)" ValueExpression="@(() => CustomerDto.Description)" ValueChanged="@((newVal) => {CustomerDto.Description= newVal;})"
+                                  Class="col-md-12" Dir="@BitDir.Rtl" Label=""
+                                  Placeholder="توضیحات" Classes="@(StylesProvider.textFieldStyleClasses)" />
+
+                    <BitCheckbox @bind-Value="CustomerDto.IsLoyaltyProgramSmsAllowed"
+                                 Class="col-md-12" Dir="@BitDir.Rtl"
+                                 Label="عدم ارسال پیام کوتاه برنامه های وفاداری" />
+
+                    <BitCheckbox @bind-Value="CustomerDto.IsLoyaltyRewardAllowed"
+                                 Class="col-md-12" Dir="@BitDir.Rtl"
+                                 Label="عدم اعطای پاداش های وفاداری" />
+                </div>
+
+                <div dir="rtl" class="d-flex justify-content-end mt-4 gap-3">
+                    <BitButton Class="btn-style btn-white w-auto"
+                               Title="عضویت">
+                        انصراف
+                    </BitButton>
+                    <BitButton ButtonType="BitButtonType.Submit" Class="btn-style btn-blue w-auto"
+                               Title="عضویت">
+                        ذخیره
+                    </BitButton>
+
+
+
+                </div>
+
+            </EditForm>
+
+        </div>
+    </div>
+
+</div>
+
+@code {
+
+    List<BitDropdownItem<Gender?>> genders = new()
+    {
+        new () {Text = "مرد", Value = Gender.Male},
+        new () {Text = "زن", Value = Gender.Female},
+        new () {Text = "سایر", Value = Gender.Other},
+    };
+
+    List<BitDropdownItem<CityDto>> cities { get; set; } = new();
+
+    List<BitDropdownItem<TEnum>> getDropdownItems<TEnum>(Func<TEnum, string> textSelector) where TEnum : struct, Enum
+    {
+        var values =
+            Enum.GetValues<TEnum>().
+                Select(e => new BitDropdownItem<TEnum>()
+                    {
+                        Text = textSelector(e),
+                        Value = e
+                    }).ToList();
+
+        return values;
+    }
+
+    List<BitDropdownItem<TEnum?>> getNullableDropdownItems<TEnum>(Func<TEnum, string> textSelector) where TEnum : struct, Enum
+    {
+        var values =
+            Enum.GetValues<TEnum>().
+                Select(e => new BitDropdownItem<TEnum?>()
+                    {
+                        Text = textSelector(e),
+                        Value = e
+                    }).ToList();
+
+        return values;
+    }
+
+        private BitSnackBar basicSnackBarRef = new();
+        private BitSnackBarType basicSnackBarType = BitSnackBarType.Success;
+        private BitSnackBarPosition basicSnackBarPosition = BitSnackBarPosition.BottomLeft;
+        private string basicSnackBarTitle = "مشتری با موفقیت ذخیره شد";
+        private string basicSnackBarBody = string.Empty;
+        private bool basicSnackBarAutoDismiss = true;
+        private int basicSnackBarDismissSeconds = 10;
+
+        private async Task OpenBasicSnackBar()
+        {
+            await basicSnackBarRef.Show(basicSnackBarTitle, basicSnackBarBody, basicSnackBarType);
+        }
+}

@@ -1,0 +1,66 @@
+﻿@inherits AppComponentBase
+
+<div class="row g-2" dir="rtl">
+    <label for="birthDay" >@Title</label>
+    <div class="col-md-4">
+        <BitDropdown Items="Days"
+                     TValue="int"
+                     TItem="BitDropdownItem<int>"
+                     Placeholder="روز" Dir="@BitDir.Rtl" Combo="@true"
+                     Styles="@dropdownStyles"
+                     Classes="dropdownClasses"
+                     OnSelectItem="WrapHandled(UpdateDate)"
+                     @bind-Value="Day" />
+    </div>
+    <div class="col-md-4">
+        <BitDropdown Items="Months"
+                     TValue="int"
+                     TItem="BitDropdownItem<int>"
+                     Placeholder="ماه"
+                     @bind-Value="Month" Combo="@true"
+                     OnSelectItem="WrapHandled(UpdateDate)"
+                     Styles="@dropdownStyles"
+                     Classes="dropdownClasses"
+                     Dir="@BitDir.Rtl"/>
+    </div>
+    <div class="col-md-4">
+        <BitDropdown Items="Years"
+                     TValue="int"
+                     TItem="BitDropdownItem<int>"
+                     Placeholder="سال" Dir="@BitDir.Rtl" Combo="@true"
+                     Styles="@dropdownStyles"
+                     Classes="dropdownClasses"
+                     @bind-Value="Year" OnSelectItem="WrapHandled(UpdateDate)" />
+    </div>
+</div>
+
+@code {
+    List<BitDropdownItem<int>> Years = Enumerable.Range(1300, 200).Select(y => new BitDropdownItem<int>()
+        {
+            Text = y.ToString(),
+            Value = y
+        }).ToList();
+    List<BitDropdownItem<int>> Months = Enumerable.Range(1, 12).Select(y => new BitDropdownItem<int>()
+        {
+            Text = y.ToString(),
+            Value = y
+        }).ToList();
+
+    List<BitDropdownItem<int>> Days = Enumerable.Range(1, 31).Select(y => new BitDropdownItem<int>()
+        {
+            Text = y.ToString(),
+            Value = y
+        }).ToList();
+
+    BitDropdownClassStyles dropdownStyles = new()
+    {
+        TextContainer = "text-overflow: unset;", 
+        ComboBoxInput = "width:100%;",
+        Container = "display: flex; max-height: 40px;"
+    };
+    BitDropdownClassStyles dropdownClasses = new()
+    {
+        Container = "form-control"
+    };
+
+}

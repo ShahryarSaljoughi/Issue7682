@@ -1,0 +1,15 @@
+﻿@inherits BitTextField
+
+"@* <div>
+    <BitTextField Classes="@(new() { FieldGroup = "custom-field",
+                                     Focused = "custom-focus"})"
+                  @bind-Value="@(TextValue)"
+                  Label="@(TextLabel)"
+                  Placeholder="@(TextPlaceholder)"
+                  Type="@(TextType)"
+                  HasBorder="false">
+     </BitTextField>
+</div> *@"
+@{
+    base.BuildRenderTree(__builder);
+}

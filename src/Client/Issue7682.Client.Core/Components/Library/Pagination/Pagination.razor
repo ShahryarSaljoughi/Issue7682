@@ -1,0 +1,49 @@
+@inherits AppComponentBase
+
+<div>
+    <BitPagination Count="@((State.LastPageIndex ?? 0) +1)"
+                   OnChange="@((page) => {State.SetCurrentPageIndexAsync(page-1); })"
+                   Appearance="BitAppearance.Text" />
+</div>
+
+
+
+@* @using Bit.BlazorUI
+
+<div class="custom-paginator">
+    <nav role="navigation">
+        <button type="button" @onclick="GoFirstAsync" disabled="@(!CanGoBack)" title="Go to first page" aria-label="Go to first page">&laquo;</button>
+        <button type="button" @onclick="GoPreviousAsync" disabled="@(!CanGoBack)" title="Go to previous page" aria-label="Go to previous page">&lt;</button>
+        <div class="pagination-text">
+            @for (int i = 0; i < (State.LastPageIndex + 1); i++)
+            {
+                <button type="button" class="@(State.CurrentPageIndex == i ? "current-page" : "")" @onclick="() => GoToPageAsync(i)">
+                    @(i + 1)
+                </button>
+            }
+        </div>
+        <button type="button" @onclick="GoNextAsync" disabled="@(!CanGoForwards)" title="Go to next page" aria-label="Go to next page">&gt;</button>
+        <button type="button" @onclick="GoLastAsync" disabled="@(!CanGoForwards)" title="Go to last page" aria-label="Go to last page">&raquo;</button>
+    </nav>
+</div>
+ *@
+@code {
+    private bool _isSubscribed;
+
+    protected override void OnParametersSet()
+    {
+        if (!_isSubscribed)
+        {
+            State.TotalItemCountChanged += async (sender, args) => await InvokeAsync(StateHasChanged);
+            _isSubscribed = true;
+        }
+    }
+
+    // private Task GoFirstAsync() => GoToPageAsync(0);
+    // private Task GoPreviousAsync() => GoToPageAsync(State.CurrentPageIndex - 1);
+    // private Task GoNextAsync() => GoToPageAsync(State.CurrentPageIndex + 1);
+    // private Task GoLastAsync() => GoToPageAsync(State.LastPageIndex.GetValueOrDefault(0));
+    // private Task GoToPageAsync(int pageIndex) => State.SetCurrentPageIndexAsync(pageIndex);
+    // private bool CanGoBack => State.CurrentPageIndex > 0;
+    // private bool CanGoForwards => State.CurrentPageIndex < State.LastPageIndex;
+}

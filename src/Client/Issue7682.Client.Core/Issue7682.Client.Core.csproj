@@ -13,6 +13,14 @@
 
         <Content Remove="compilerconfig.json" />
         <None Include="compilerconfig.json" />
+        <None Include="Components\Library\BackBtn.razor" />
+        <None Include="Components\Library\Breadcrumb\Breadcrumb.razor" />
+        <None Include="Components\Library\Buttons\BlueButton.razor" />
+        <None Include="Components\Library\Buttons\WhiteButton.razor" />
+        <None Include="Components\Library\DateInput.razor" />
+        <None Include="Components\Library\Inputs\PasswordTextInput.razor" />
+        <None Include="Components\Library\Inputs\TextInput.razor" />
+        <None Include="Components\Library\Pagination\Pagination.razor" />
         <Content Remove="appsettings*.json" />
         <EmbeddedResource Include="appsettings*.json" />
 

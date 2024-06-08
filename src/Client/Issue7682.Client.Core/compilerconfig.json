@@ -172,5 +172,17 @@
         "inputFile": "Components/Pages/Products/ProductsPage.razor.scss",
         "minify": { "enabled": false },
         "options": { "sourceMap": false }
+    },
+    {
+        "outputFile": "Components/Pages/BitBigForm.razor.css",
+        "inputFile": "Components/Pages/BitBigForm.razor.scss",
+        "minify": { "enabled": false },
+        "options": { "sourceMap": false }
+    },
+    {
+        "outputFile": "Components/Pages/NativeBigForm.razor.css",
+        "inputFile": "Components/Pages/NativeBigForm.razor.scss",
+        "minify": { "enabled": false },
+        "options": { "sourceMap": false }
     }
 ]
