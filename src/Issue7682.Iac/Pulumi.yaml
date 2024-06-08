@@ -1,0 +1,3 @@
+﻿name: Issue7682.Iac
+runtime: dotnet
+description: Issue7682 infrastructure as a code

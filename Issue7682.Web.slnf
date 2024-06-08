@@ -1,0 +1,11 @@
+{
+  "solution": {
+    "path": "Issue7682.sln",
+    "projects": [
+      "src\\Issue7682.Server\\Issue7682.Server.csproj",
+      "src\\Issue7682.Shared\\Issue7682.Shared.csproj",
+      "src\\Client\\Issue7682.Client.Core\\Issue7682.Client.Core.csproj",
+      "src\\Client\\Issue7682.Client.Web\\Issue7682.Client.Web.csproj"
+    ]
+  }
+}
